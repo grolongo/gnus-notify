@@ -81,10 +81,7 @@ contains new messages"))
                   (cadr (split-string group "[:]"))
                 group)))
     (mapconcat 'identity
-               (mapcar
-                (lambda (segment)
-                  (string (elt segment 0)))
-                (split-string name "[\\./]"))
+               (split-string name "[\\./]")
                ".")))
 
 

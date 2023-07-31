@@ -89,17 +89,17 @@ contains new messages"))
   "Update the modeline to show groups containing new messages"
   (if gnus-mst-notify-groups
       (setq gnus-mst-display-new-messages
-            (append (list " [m: ")
+            (append (list "")
                     (cl-maplist
                      (lambda (sublist)
                        (let ((group (car sublist))
                              (map (make-sparse-keymap)))
                          (define-key map [mode-line mouse-1]
-                           `(lambda ()
-                              (interactive)
-                              (run-hook-with-args
-                               'gnus-notify-jump-to-group-hook ,group)
-                              (gnus-group-read-group nil nil ,group)))
+                                     `(lambda ()
+                                        (interactive)
+                                        (run-hook-with-args
+                                         'gnus-notify-jump-to-group-hook ,group)
+                                        (gnus-group-read-group nil nil ,group)))
                          (cl-list*
                           (list ':propertize
                                 (if gnus-notify-show-unread-counts
@@ -117,7 +117,7 @@ contains new messages"))
                               (list ", ")
                             nil))))
                      gnus-mst-notify-groups)
-                    (list "] ")))
+                    (list "")))
     (setq gnus-mst-display-new-messages "")))
 
 

@@ -28,13 +28,12 @@
 ;; Clicking on a group in the modeline will enter that group and view the new
 ;; message.
 
-;; Code:
+;;; Code:
 
 (require 'cl-lib)
 
 (defvar gnus-notify-show-unread-counts t
-  "If true, show the number of unread messages in the modeline in addition to shortened group names.")
-
+  "If true, show the number of unread messages in the modeline.")
 
 (when (fboundp 'gnus-define-group-parameter)
   (gnus-define-group-parameter
@@ -50,7 +49,7 @@ contains new messages"))
 (defvar gnus-mst-notify-groups '())
 (defvar gnus-notify-jump-to-group-hook '()
   "This hook is invoked before jumping to a gnus group with unread messages.
-  Each hook should take a single argument - the GROUP to be selected")
+Each hook should take a single argument - the GROUP to be selected")
 
 
 (add-hook 'gnus-exit-gnus-hook
@@ -76,7 +75,7 @@ contains new messages"))
 
 
 (defun gnus-mst-notify-shorten-group-name (group)
-  "shorten the group name to make it better fit on the modeline"
+  "Shorten the GROUP name to make it better fit on the modeline."
   (let ((name (if (string-match ":" group)
                   (cadr (split-string group "[:]"))
                 group)))
@@ -86,7 +85,7 @@ contains new messages"))
 
 
 (defun gnus-mst-notify-update-modeline ()
-  "Update the modeline to show groups containing new messages"
+  "Update the modeline to show groups containing new messages."
   (if gnus-mst-notify-groups
       (setq gnus-mst-display-new-messages
             (append (list "")
@@ -122,7 +121,7 @@ contains new messages"))
 
 
 (defun gnus-mst-notify-group (group)
-  "Add notification for this group"
+  "Add notification for this GROUP."
   (unless (member group gnus-mst-notify-groups)
     (add-to-list 'gnus-mst-notify-groups group)
     (gnus-mst-notify-update-modeline)))
@@ -132,13 +131,13 @@ contains new messages"))
   (interactive)
   (setq gnus-mst-notify-groups '())
   (gnus-mst-notify-update-modeline)
-  (mapc '(lambda (g)
-           (let* ((group (car g))
-                  (unread (gnus-group-unread group)))
-             (when (and (cdr (assoc 'modeline-notify
-                                    (gnus-group-find-parameter group)))
-                        (and (numberp unread) (> unread 0)))
-               (gnus-mst-notify-group group))))
+  (mapc #'(lambda (g)
+            (let* ((group (car g))
+                   (unread (gnus-group-unread group)))
+              (when (and (cdr (assoc 'modeline-notify
+                                     (gnus-group-find-parameter group)))
+                         (and (numberp unread) (> unread 0)))
+                (gnus-mst-notify-group group))))
         gnus-newsrc-alist))
 
 

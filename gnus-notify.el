@@ -31,14 +31,21 @@
 ;;; Code:
 
 (require 'cl-lib)
+(require 'gnus)
 
 (defvar gnus-notify-show-unread-counts t
   "If true, show the number of unread messages in the modeline.")
 
+(defvar modeline-notify nil
+  "Notify of new messages for this group.")
+
+(defvar gnus-parameter-modeline-notify-alist nil
+  "Alist of groups and whether they should be shown in the modeline.")
+
 (when (fboundp 'gnus-define-group-parameter)
   (gnus-define-group-parameter
    modeline-notify
-   :type bool
+   :type 'bool
    :parameter-type '(const :tag "Notify of new messages for this group." t)
    :parameter-document "\
 
@@ -58,6 +65,7 @@ Each hook should take a single argument - the GROUP to be selected")
 
 
 (defun gnus-mst-notify-modeline-form ()
+  "Update Gnus modeline with new message count."
   gnus-mst-display-new-messages)
 
 
@@ -128,6 +136,11 @@ Each hook should take a single argument - the GROUP to be selected")
 
 
 (defun gnus-mst-show-groups-with-new-messages (&rest ignored)
+  "Update and notify Gnus groups with unread messages.
+Clears the list of notified groups, updates the modeline display,
+and triggers notifications for groups with unread messages.
+
+IGNORED is not used and only present to satisfy interactive call requirements."
   (interactive)
   (setq gnus-mst-notify-groups '())
   (gnus-mst-notify-update-modeline)
